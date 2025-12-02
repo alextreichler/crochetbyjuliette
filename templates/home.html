@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crochet by Juliette</title>
+    <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="star-background">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
+</div>
+
+<header>
+    <div class="header-content">
+        <img src="/static/img/logo.svg" alt="Cute Mouse Logo" class="header-logo">
+        <h1 class="header-title">Crochet by Juliette</h1>
+        <p class="header-subtitle">Handmade with love, just for you.</p>
+    </div>
+    <div class="header-actions">
+        <a href="/" class="header-login-btn active">Home</a>
+        <a href="/status-request" class="header-login-btn">Order Status</a>
+        <a href="/login" class="header-login-btn">Admin Login</a>
+    </div>
+</header>
+
+<section class="hero">
+    <h2 class="hero-headline">Handcrafted Warmth, Stitch by Stitch</h2>
+    <p class="hero-subheadline">Discover unique, handmade crochet items crafted with love and attention to detail. Perfect for gifts or a cozy treat for yourself.</p>
+</section>
+
+<div class="container" id="products">
+    <div class="grid">
+        {{range .Items}}
+        <div class="card">
+            <img src="{{.ImageURL}}" alt="{{.Title}}">
+            <div class="card-body">
+                <h3 class="card-title">{{.Title}}</h3>
+                <div class="card-price">${{.Price}}</div>
+                <p class="card-text">{{.Description}}</p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                    <span class="badge">Takes {{.DeliveryTime}}</span>
+                    {{if eq .Status "out_of_stock"}}
+                        <span class="badge" style="background: #ffebee; color: #c62828;">Out of Stock</span>
+                    {{else if eq .Status "archived"}}
+                        <span class="badge" style="background: #eceff1; color: #455a64;">Unavailable</span>
+                    {{else}}
+                        <span class="badge" style="background: #e8f5e9; color: #2e7d32;">Available</span>
+                    {{end}}
+                </div>
+                
+                {{if eq .Status "available"}}
+                <a href="/order?id={{.ID}}" class="order-btn">Place Order</a>
+                {{end}}
+            </div>
+        </div>
+        {{else}}
+        <div class="empty-state" style="grid-column: 1/-1;">
+            <!-- Simple SVG of an open box/basket -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 7h-4.586l-2.707-2.707A.996.996 0 0 0 12 4h-2a.996.996 0 0 0-.707.293L6.586 7H4c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM4 9h16v10H4V9zm7-4h2l2 2h-6l2-2z"/>
+            </svg>
+            <h3>The shelves are bare!</h3>
+            <p>Juliette is busy crocheting new wonders. Check back soon!</p>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+<footer>
+    <div style="margin-bottom: 1.5rem;">
+        <h4 style="margin: 0 0 0.5rem 0; color: #e91e63;">Contact Us</h4>
+        <p style="margin: 0; font-size: 0.9rem; color: #666;">
+            Questions? Custom Request?<br>
+            Email us at: <a href="mailto:juliette@example.com" style="color: #333; font-weight: bold;">juliette@example.com</a>
+        </p>
+    </div>
+    <p>&copy; 2025 Crochet by Juliette</p>
+    <p><a href="/status-request" style="color: #999; text-decoration: none; font-size: 0.9rem;">Check Order Status</a></p>
+</footer>
+
+<!-- The Modal -->
+<div id="imageModal" class="modal">
+  <span class="close">&times;</span>
+  <img class="modal-content" id="img01">
+</div>
+
+<script src="/static/js/main.js"></script>
+
+</body>
+</html>

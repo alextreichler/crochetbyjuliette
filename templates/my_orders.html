@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Crochet by Juliette</title>
+    <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        body { padding: 2rem; align-items: center; flex-direction: column; }
+        .container-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #f1f1f1; }
+        .btn-view { background-color: #e91e63; color: white; text-decoration: none; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.9rem; }
+        .status-badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
+        .status-Ordered { background: #e3f2fd; color: #1565c0; }
+        .status-In-Progress { background: #fff3e0; color: #ef6c00; }
+        .status-Completed { background: #e8f5e9; color: #2e7d32; }
+        .status-Needs-Shipping { background: #f3e5f5; color: #7b1fa2; }
+        .status-Shipped { background: #e0f7fa; color: #006064; }
+        .status-Delivered { background: #212121; color: #fff; }
+        .status-Cancelled { background: #ffebee; color: #c62828; text-decoration: line-through; }
+
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .flash-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        .flash-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-box">
+    <h2 style="color: #e91e63; margin-top: 0;">My Orders</h2>
+    <p>Showing orders for <strong>{{.Email}}</strong></p>
+
+    <div id="toast-target" style="display:none;">
+        {{with .Flashes}}
+            {{range .}}
+            <div class="flash-message flash-{{.Type}}">{{.Message}}</div>
+            {{end}}
+        {{end}}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Order Ref</th>
+                <th>Date</th>
+                <th>Item</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Orders}}
+            <tr>
+                <td><strong style="font-family: monospace;">{{.OrderRef}}</strong></td>
+                <td>{{.CreatedAt.Format "Jan 02, 2006"}}</td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <img src="{{.ItemImageURL}}" width="40" height="40" style="border-radius: 4px; object-fit: cover;">
+                        <div>
+                            {{.ItemTitle}}<br>
+                            <small style="color: #666;">Qty: {{.Quantity}}</small>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="status-badge status-{{.Status}}">{{.Status}}</span></td>
+                <td>
+                    <a href="/order/status/{{.MagicToken}}" class="btn-view" target="_blank">View Details</a>
+                </td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="5">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                        </svg>
+                        <h3>No orders yet</h3>
+                        <p>You haven't placed any orders with this email.</p>
+                    </div>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    
+    <a href="/" style="display: block; margin-top: 2rem; color: #666; text-decoration: none; text-align: center;">&larr; Back to Shop</a>
+</div>
+
+</body>
+</html>

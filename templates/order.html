@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order {{.Item.Title}} - Crochet by Juliette</title>
+    <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="order-body">
+
+<div class="order-container">
+    <h2 class="order-title">Place Order Request</h2>
+    <div id="toast-target" style="display:none;">
+        {{with .Flashes}}
+            {{range .}}
+            <div class="flash-message flash-{{.Type}}">{{.Message}}</div>
+            {{end}}
+        {{end}}
+    </div>
+    <div class="item-summary">
+        <img src="{{.Item.ImageURL}}" alt="{{.Item.Title}}">
+        <div>
+            <h3 style="margin: 0;">{{.Item.Title}}</h3>
+            <p style="margin: 0.5rem 0;">${{.Item.Price}}</p>
+        </div>
+    </div>
+
+    <form method="POST" action="/order" class="form-grid">
+        {{.CsrfField}}
+        <input type="hidden" name="item_id" value="{{.Item.ID}}">
+        
+        <div>
+            <label for="quantity" class="form-label">Quantity</label>
+            <input type="number" id="quantity" name="quantity" class="form-input" value="1" min="1" required>
+        </div>
+
+        <div>
+            <label for="name" class="form-label">Your Name</label>
+            <input type="text" id="name" name="name" class="form-input" required placeholder="Jane Doe">
+        </div>
+        
+        <div>
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" id="email" name="email" class="form-input" required placeholder="jane@example.com">
+        </div>
+        
+        <div>
+            <label for="address" class="form-label">Shipping Address</label>
+            <textarea id="address" name="address" class="form-textarea" rows="3" placeholder="123 Crochet Lane..."></textarea>
+        </div>
+
+        <div>
+            <label for="notes" class="form-label">Notes (Optional colors, size, etc.)</label>
+            <textarea id="notes" name="notes" class="form-textarea" rows="2"></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Send Request</button>
+    </form>
+    <a href="/" class="cancel-link">Cancel</a>
+</div>
+
+</body>
+</html>

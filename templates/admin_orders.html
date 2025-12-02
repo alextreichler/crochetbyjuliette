@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders - Crochet by Juliette</title>
+    <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="admin-body">
+
+<header>
+    <div class="header-content">
+        <img src="/static/img/logo.svg" alt="Cute Mouse Logo" class="header-logo">
+        <h1 class="header-title">Crochet by Juliette</h1>
+        <p class="header-subtitle">Handmade with love, just for you.</p>
+    </div>
+    <div class="header-actions">
+        <a href="/" class="header-login-btn">Home</a>
+        <a href="/status-request" class="header-login-btn">Order Status</a>
+        <a href="/admin" class="header-login-btn active">Admin Login</a>
+    </div>
+</header>
+
+<div class="admin-page-container">
+    <div class="admin-header">
+        <h1>Orders</h1>
+        <a href="/admin" class="admin-btn admin-btn-back">Back to Dashboard</a>
+    </div>
+
+    <div id="toast-target" style="display:none;">
+        {{with .Flashes}}
+            {{range .}}
+            <div class="flash-message flash-{{.Type}}">{{.Message}}</div>
+            {{end}}
+        {{end}}
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Order Ref</th>
+                <th>Date</th>
+                <th>Item</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Orders}}
+            <tr>
+                <td><strong style="font-family: monospace; font-size: 1.1em;">{{.OrderRef}}</strong></td>
+                <td>{{.CreatedAt.Format "Jan 02"}}</td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <img src="{{.ItemImageURL}}" width="40" height="40" style="border-radius: 4px; object-fit: cover;">
+                        <div>
+                            {{.ItemTitle}}<br>
+                            <small style="color: #666;">Qty: {{.Quantity}}</small>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <strong>{{.CustomerName}}</strong><br>
+                    <small>{{.CustomerEmail}}</small><br>
+                    <small style="color: #666;">{{.CustomerAddress}}</small>
+                    {{if .Notes}}<br><small style="color: #e91e63;">Note: {{.Notes}}</small>{{end}}
+                </td>
+                <td><span class="status-badge status-{{.Status}}">{{.Status}}</span></td>
+                <td>
+                    <form method="POST" action="/admin/orders/update">
+                        {{$.CsrfField}}
+                        <input type="hidden" name="id" value="{{.ID}}">
+                        <select name="status" class="admin-select">
+                            <option value="Ordered" {{if eq .Status "Ordered"}}selected{{end}}>Ordered</option>
+                            <option value="In Progress" {{if eq .Status "In Progress"}}selected{{end}}>In Progress</option>
+                            <option value="Completed" {{if eq .Status "Completed"}}selected{{end}}>Completed</option>
+                            <option value="Needs Shipping" {{if eq .Status "Needs Shipping"}}selected{{end}}>Needs Shipping</option>
+                            <option value="Shipped" {{if eq .Status "Shipped"}}selected{{end}}>Shipped</option>
+                            <option value="Delivered" {{if eq .Status "Delivered"}}selected{{end}}>Delivered</option>
+                            <option value="Cancelled" {{if eq .Status "Cancelled"}}selected{{end}}>Cancelled</option>
+                        </select>
+                        <button type="submit" class="admin-update-btn">Update</button>
+                    </form>
+                </td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="6">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 21h14a2 2 0 0 0 2-2V8a1 1 0 0 0-.29-.71l-4-4A1 1 0 0 0 16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm10-2V9h4v10h-4zM5 5h9v2h-9V5zM5 9h9v2h-9V9zM5 13h9v2h-9v-2zM5 17h9v2h-9v-2z"/>
+                        </svg>
+                        <h3>No Orders Found</h3>
+                        <p>Wait for the orders to roll in!</p>
+                    </div>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+
+    {{if gt .TotalPages 1}}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+        <div>
+            {{if gt .CurrentPage 1}}
+            <a href="/admin/orders?page={{.CurrentPage | prevPage .}}&limit={{.Limit}}" class="btn nav-btn">Previous</a>
+            {{end}}
+        </div>
+        <div>
+            Page {{.CurrentPage}} of {{.TotalPages}}
+        </div>
+        <div>
+            {{if lt .CurrentPage .TotalPages}}
+            <a href="/admin/orders?page={{.CurrentPage | nextPage .}}&limit={{.Limit}}" class="btn nav-btn">Next</a>
+            {{end}}
+        </div>
+    </div>
+    {{end}}
+</div>
+
+<footer>
+    <div style="margin-bottom: 1.5rem;">
+        <h4 style="margin: 0 0 0.5rem 0; color: #e91e63;">Contact Us</h4>
+        <p style="margin: 0; font-size: 0.9rem; color: #666;">
+            Questions? Custom Request?<br>
+            Email us at: <a href="mailto:juliette@example.com" style="color: #333; font-weight: bold;">juliette@example.com</a>
+        </p>
+    </div>
+    <p>&copy; 2025 Crochet by Juliette</p>
+    <p><a href="/status-request" style="color: #999; text-decoration: none; font-size: 0.9rem;">Check Order Status</a></p>
+</footer>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>

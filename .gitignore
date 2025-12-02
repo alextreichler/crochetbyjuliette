@@ -1,0 +1,37 @@
+# Binaries
+/bin
+/dist
+/build
+/k8s
+main
+crochet-server
+crochet-cli
+
+# Vendor
+vendor/
+
+# Environment Variables & Secrets
+.env
+.env.local
+*.key
+*.pem
+secrets.yaml
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# IDEs
+.vscode
+.idea
+.DS_Store
+
+# Uploaded Content (Local dev)
+static/uploads/*
+!static/uploads/.keep
+
+# Specs & Plans (User request)
+PLAN.md
+K8S_CLOUDFLARE_GUIDE.md
+REVIEW.md

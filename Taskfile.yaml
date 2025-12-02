@@ -1,0 +1,28 @@
+version: '3'
+
+vars:
+  IMAGE_NAME: ghcr.io/alextreichler/crochetbyjuliette
+  TAG: latest
+
+tasks:
+  default:
+    cmds:
+      - task: build
+
+  build:
+    desc: Build the Go binaries locally
+    cmds:
+      - go build -o crochet-server ./cmd/server
+      - go build -o crochet-cli ./cmd/cli
+
+  image:
+    desc: Build the container image using Podman
+    cmds:
+      - podman build -t {{.IMAGE_NAME}}:{{.TAG}} .
+
+  push:
+    desc: Push the container image to GHCR
+    deps: [image]
+    cmds:
+      - echo "Pushing to {{.IMAGE_NAME}}:{{.TAG}}"
+      - podman push {{.IMAGE_NAME}}:{{.TAG}}

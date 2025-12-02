@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Crochet by Juliette</title>
+    <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <img src="/static/img/logo.svg" alt="Cute Mouse Logo" class="header-logo">
+        <h1 class="header-title">Crochet by Juliette</h1>
+        <p class="header-subtitle">Handmade with love, just for you.</p>
+    </div>
+    <div class="header-actions">
+        <a href="/" class="header-login-btn">Home</a>
+        <a href="/status-request" class="header-login-btn">Order Status</a>
+        <a href="/login" class="header-login-btn active">Admin Login</a>
+    </div>
+</header>
+
+    <div class="auth-container">
+        <h2 style="text-align: center; color: #333;">Admin Login</h2>
+    <div id="toast-target" style="display:none;">
+        {{if .Error}}
+        <div class="flash-message flash-error">{{.Error}}</div>
+        {{end}}
+        {{with .Flashes}}
+            {{range .}}
+            <div class="flash-message flash-{{.Type}}">{{.Message}}</div>
+            {{end}}
+        {{end}}
+    </div>
+        <form method="POST" action="/login" class="form-grid">
+            {{.CsrfField}}
+            <div>
+                <label for="username" class="form-label" style="text-align: left;">Username</label>
+                <input type="text" id="username" name="username" class="form-input" required>
+            </div>
+            <div>
+                <label for="password" class="form-label" style="text-align: left;">Password</label>
+                <input type="password" id="password" name="password" class="form-input" required>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+    </div>
+<footer>
+    <div style="margin-bottom: 1.5rem;">
+        <h4 style="margin: 0 0 0.5rem 0; color: #e91e63;">Contact Us</h4>
+        <p style="margin: 0; font-size: 0.9rem; color: #666;">
+            Questions? Custom Request?<br>
+            Email us at: <a href="mailto:juliette@example.com" style="color: #333; font-weight: bold;">juliette@example.com</a>
+        </p>
+    </div>
+    <p>&copy; 2025 Crochet by Juliette</p>
+    <p><a href="/status-request" style="color: #999; text-decoration: none; font-size: 0.9rem;">Check Order Status</a></p>
+</footer>
+
+</body>
+</html>
