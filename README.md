@@ -78,14 +78,6 @@ Creates `crochet-server` and `crochet-cli` in the root.
 task image
 ```
 
-### Deploy to Kubernetes
-See [K8S_CLOUDFLARE_GUIDE.md](K8S_CLOUDFLARE_GUIDE.md) (local doc) for details on deploying with Flux and Cloudflare Tunnels.
-
-Basic usage:
-```bash
-kubectl apply -f k8s/manifests.yaml
-```
-
 ## Project Structure
 
 -   `cmd/`: Entry points (`server` for web app, `cli` for management tools).
