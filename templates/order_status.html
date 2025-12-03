@@ -59,8 +59,21 @@
             <p style="margin: 0;"><strong>Qty:</strong> {{.Order.Quantity}}</p>
             <p style="margin: 0;"><strong>Customer:</strong> {{.Order.CustomerName}}</p>
             <p style="margin: 0;"><strong>Shipping to:</strong> {{.Order.CustomerAddress}}</p>
+            <p style="margin: 0;"><strong>Notes:</strong> {{.Order.Notes}}</p>
         </div>
     </div>
+
+    {{if eq .Order.Status "Ordered"}}
+    <div style="text-align: center; margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
+        <a href="/order/edit/{{.Order.MagicToken}}" class="submit-btn" style="text-decoration: none; display: inline-block; width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">Edit Details</a>
+        
+        <form method="POST" action="/order/cancel" onsubmit="return confirm('Are you sure you want to cancel this order?');" style="display: inline;">
+            {{.CsrfField}}
+            <input type="hidden" name="token" value="{{.Order.MagicToken}}">
+            <button type="submit" class="submit-btn" style="background-color: #999; width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">Cancel Order</button>
+        </form>
+    </div>
+    {{end}}
 
     <div style="text-align: center; margin-top: 2rem;">
         <a href="/" class="cancel-link">&larr; Back to Shop</a>

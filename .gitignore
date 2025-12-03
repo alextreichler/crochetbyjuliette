@@ -6,6 +6,7 @@
 main
 crochet-server
 crochet-cli
+server
 
 # Vendor
 vendor/

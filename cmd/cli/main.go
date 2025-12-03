@@ -46,7 +46,7 @@ func createUser(username, password string) {
 		log.Fatalf("Failed to open database: %v", err)
 	}
 	// Ensure table exists if running cli before server
-	if err := db.InitSchema(); err != nil {
+	if err := db.Migrate("migrations"); err != nil {
 		log.Fatalf("Failed to init schema: %v", err)
 	}
 

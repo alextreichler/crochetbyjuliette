@@ -63,3 +63,15 @@ func (s *Store) GetItemByID(id int) (*models.Item, error) {
 	}
 	return &i, nil
 }
+
+func (s *Store) UpdateOrderDetails(order *models.Order) error {
+	query := `UPDATE orders SET quantity = ?, customer_name = ?, customer_email = ?, customer_address = ?, notes = ? WHERE id = ?`
+	_, err := s.DB.Exec(query, order.Quantity, order.CustomerName, order.CustomerEmail, order.CustomerAddress, order.Notes, order.ID)
+	return err
+}
+
+func (s *Store) CancelOrder(id int) error {
+	query := `UPDATE orders SET status = 'Cancelled' WHERE id = ?`
+	_, err := s.DB.Exec(query, id)
+	return err
+}

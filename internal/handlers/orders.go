@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/alextreichler/crochetbyjuliette/internal/models"
@@ -163,4 +164,132 @@ func (h *OrderHandler) SubmitOrder(w http.ResponseWriter, r *http.Request) {
 var emailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 func isValidEmail(email string) bool {
 	return emailRegex.MatchString(email)
+}
+
+func (h *OrderHandler) EditOrderForm(w http.ResponseWriter, r *http.Request) {
+	session, _ := h.SessionStore.Get(r, "order-session")
+	defer session.Save(r, w)
+
+	path := r.URL.Path
+	parts := strings.Split(path, "/")
+	if len(parts) < 4 {
+		session.AddFlash(FlashMessage{Type: "error", Message: "Invalid link."})
+		http.Redirect(w, r, "/status-request", http.StatusSeeOther)
+		return
+	}
+	token := parts[3]
+
+	order, err := h.Store.GetOrderByToken(token)
+	if err != nil {
+		session.AddFlash(FlashMessage{Type: "error", Message: "Order not found."})
+		http.Redirect(w, r, "/status-request", http.StatusSeeOther)
+		return
+	}
+
+	if order.Status != "Ordered" {
+		session.AddFlash(FlashMessage{Type: "error", Message: "This order cannot be edited anymore."})
+		http.Redirect(w, r, "/order/status/"+token, http.StatusSeeOther)
+		return
+	}
+
+	tmpl := h.Templates.Get("edit_order.html")
+	if tmpl == nil {
+		http.Error(w, "Template not found", http.StatusInternalServerError)
+		return
+	}
+	
+	data := map[string]interface{}{
+		"Order":     order,
+		"CsrfField": csrf.TemplateField(r),
+		"Flashes":   GetFlash(session),
+	}
+	tmpl.Execute(w, data)
+}
+
+func (h *OrderHandler) UpdateOrder(w http.ResponseWriter, r *http.Request) {
+	session, _ := h.SessionStore.Get(r, "order-session")
+	defer session.Save(r, w)
+
+	if err := r.ParseForm(); err != nil {
+		session.AddFlash(FlashMessage{Type: "error", Message: "Invalid form data."})
+		http.Redirect(w, r, "/status-request", http.StatusSeeOther)
+		return
+	}
+
+	token := r.FormValue("token")
+	order, err := h.Store.GetOrderByToken(token)
+	if err != nil {
+		session.AddFlash(FlashMessage{Type: "error", Message: "Order not found."})
+		http.Redirect(w, r, "/status-request", http.StatusSeeOther)
+		return
+	}
+
+	if order.Status != "Ordered" {
+		session.AddFlash(FlashMessage{Type: "error", Message: "This order cannot be edited."})
+		http.Redirect(w, r, "/order/status/"+token, http.StatusSeeOther)
+		return
+	}
+
+	// Update fields
+	name := r.FormValue("name")
+	email := r.FormValue("email")
+	address := r.FormValue("address")
+	notes := r.FormValue("notes")
+	qtyStr := r.FormValue("quantity")
+	quantity := order.Quantity
+	if qtyStr != "" {
+		if q, err := strconv.Atoi(qtyStr); err == nil && q > 0 {
+			quantity = q
+		}
+	}
+
+	// Basic Validation
+	if name == "" || email == "" || address == "" {
+		session.AddFlash(FlashMessage{Type: "error", Message: "Name, Email, and Address are required."})
+		http.Redirect(w, r, "/order/edit/"+token, http.StatusSeeOther)
+		return
+	}
+
+	order.CustomerName = name
+	order.CustomerEmail = email
+	order.CustomerAddress = address
+	order.Notes = notes
+	order.Quantity = quantity
+
+	if err := h.Store.UpdateOrderDetails(order); err != nil {
+		session.AddFlash(FlashMessage{Type: "error", Message: "Failed to update order."})
+		http.Redirect(w, r, "/order/edit/"+token, http.StatusSeeOther)
+		return
+	}
+
+	session.AddFlash(FlashMessage{Type: "success", Message: "Order updated successfully!"})
+	http.Redirect(w, r, "/order/status/"+token, http.StatusSeeOther)
+}
+
+func (h *OrderHandler) CancelOrder(w http.ResponseWriter, r *http.Request) {
+	session, _ := h.SessionStore.Get(r, "order-session")
+	defer session.Save(r, w)
+
+	token := r.FormValue("token")
+	order, err := h.Store.GetOrderByToken(token)
+	if err != nil {
+		session.AddFlash(FlashMessage{Type: "error", Message: "Order not found."})
+		http.Redirect(w, r, "/status-request", http.StatusSeeOther)
+		return
+	}
+
+	if order.Status != "Ordered" {
+		session.AddFlash(FlashMessage{Type: "error", Message: "This order cannot be cancelled."})
+		http.Redirect(w, r, "/order/status/"+token, http.StatusSeeOther)
+		return
+	}
+
+	if err := h.Store.CancelOrder(order.ID); err != nil {
+		session.AddFlash(FlashMessage{Type: "error", Message: "Failed to cancel order."})
+		http.Redirect(w, r, "/order/status/"+token, http.StatusSeeOther)
+		return
+	}
+
+	session.AddFlash(FlashMessage{Type: "success", Message: "Order cancelled successfully."})
+	http.Redirect(w, r, "/order/status/"+token, http.StatusSeeOther)
 }

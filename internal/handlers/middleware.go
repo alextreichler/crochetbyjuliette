@@ -4,6 +4,7 @@ import (
 	"encoding/gob"
 	"log/slog"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gorilla/sessions"
@@ -53,6 +54,59 @@ func SecurityHeadersMiddleware(next http.Handler) http.Handler {
 		w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self'") // Removed 'unsafe-eval' to tighten CSP.
 		next.ServeHTTP(w, r)
 	})
+}
+
+// RateLimiter struct to hold state
+type RateLimiter struct {
+	visitors sync.Map
+	window   time.Duration
+}
+
+// NewRateLimiter creates a new rate limiter with a cleanup goroutine
+func NewRateLimiter(window time.Duration) *RateLimiter {
+	rl := &RateLimiter{
+		window: window,
+	}
+	// Background cleanup
+	go rl.cleanup()
+	return rl
+}
+
+// cleanup removes old entries to prevent memory leaks
+func (rl *RateLimiter) cleanup() {
+	for {
+		time.Sleep(time.Minute)
+		now := time.Now()
+		rl.visitors.Range(func(key, value interface{}) bool {
+			lastSeen := value.(time.Time)
+			if now.Sub(lastSeen) > rl.window {
+				rl.visitors.Delete(key)
+			}
+			return true
+		})
+	}
+}
+
+// Middleware enforces the rate limit
+func (rl *RateLimiter) Middleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Only rate limit POST requests or specific actions if needed, 
+		// but for this general middleware, we assume it's applied to specific routes.
+		ip := r.RemoteAddr 
+
+		if lastSeen, ok := rl.visitors.Load(ip); ok {
+			if time.Since(lastSeen.(time.Time)) < rl.window {
+				slog.Warn("Rate limit exceeded", "ip", ip)
+				// Optionally add a Flash message if sessions are available/wanted here, 
+				// but a simple error is standard for 429.
+				http.Error(w, "Too Many Requests. Please try again later.", http.StatusTooManyRequests)
+				return
+			}
+		}
+
+		rl.visitors.Store(ip, time.Now())
+		next(w, r)
+	}
 }
 
 // FlashMessage structure

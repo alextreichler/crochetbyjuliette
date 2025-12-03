@@ -90,16 +90,24 @@ func main() {
 	fileServer := http.FileServer(http.Dir("./static"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
+	// Rate Limiter (1 request per minute)
+	rateLimiter := handlers.NewRateLimiter(1 * time.Minute)
+
 	// Public Routes
 	mux.HandleFunc("/", homeHandler.Index)
 	mux.HandleFunc("/order", orderHandler.OrderForm) // GET form
-	mux.HandleFunc("POST /order", orderHandler.SubmitOrder) // POST submit
+	mux.HandleFunc("POST /order", rateLimiter.Middleware(orderHandler.SubmitOrder)) // POST submit
 	
 	// Order Status (Magic Link)
 	mux.HandleFunc("/status-request", orderHandler.RequestStatusLink) // GET form & POST submit (could split)
-	mux.HandleFunc("POST /status-request", orderHandler.SendStatusLink)
+	mux.HandleFunc("POST /status-request", rateLimiter.Middleware(orderHandler.SendStatusLink))
 	mux.HandleFunc("/my-orders", orderHandler.MyOrders) // List all orders for valid token
 	mux.HandleFunc("/order/status/", orderHandler.ViewOrderStatus) // Trailing slash matches /order/status/{token}
+	
+	// Order Management (Edit/Cancel)
+	mux.HandleFunc("/order/edit/", orderHandler.EditOrderForm)
+	mux.HandleFunc("POST /order/update", rateLimiter.Middleware(orderHandler.UpdateOrder))
+	mux.HandleFunc("POST /order/cancel", rateLimiter.Middleware(orderHandler.CancelOrder))
 
 	mux.HandleFunc("/login", adminHandler.LoginGet)
 	mux.HandleFunc("POST /login", adminHandler.LoginPost)
