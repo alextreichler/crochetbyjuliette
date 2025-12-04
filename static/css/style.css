@@ -447,11 +447,74 @@ footer {
 }
 
 /* Mobile responsiveness for header actions */
-@media (max-width: 600px) {
-    .header-actions {
-        position: static;
-        margin-top: 1rem;
+@media (max-width: 768px) {
+    header {
+        padding: 0.5rem 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .header-content {
+        width: 100%;
         justify-content: center;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .header-login-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        flex: 1 1 auto; /* Allow buttons to grow/shrink but stay proportional */
+        text-align: center;
+        min-width: 80px; /* Prevent them from becoming too thin */
+    }
+
+    .container {
+        padding: 2rem 1rem;
+    }
+    
+    .card img {
+        height: 250px;
+    }
+
+    .hero {
+        padding: 3rem 1rem;
+    }
+
+    .hero-headline {
+        font-size: 2.5rem;
+    }
+
+    .auth-container, .order-container {
+        padding: 1.5rem;
+        margin: 1rem auto;
+        width: 95%; /* Use almost full width on mobile */
+    }
+    
+    .timeline {
+        font-size: 0.8rem;
+    }
+    
+    .step-dot {
+        width: 25px;
+        height: 25px;
+        font-size: 0.8rem;
+    }
+
+    .item-details {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    /* Target the container of the buttons in order_status.html which has inline flex style */
+    .order-container > div[style*="display: flex"] {
+        flex-wrap: wrap;
     }
 }
 
