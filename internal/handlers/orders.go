@@ -93,6 +93,8 @@ func (h *OrderHandler) SubmitOrder(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("name")
 	email := r.FormValue("email")
 	address := r.FormValue("address")
+	deliveryMethod := r.FormValue("delivery_method")
+	paymentMethod := r.FormValue("payment_method")
 	notes := r.FormValue("notes")
 	qtyStr := r.FormValue("quantity")
 	quantity := 1
@@ -112,8 +114,14 @@ func (h *OrderHandler) SubmitOrder(w http.ResponseWriter, r *http.Request) {
 	} else if !isValidEmail(email) {
 		errors["email"] = "Please enter a valid email address."
 	}
-	if address == "" {
-		errors["address"] = "Shipping address is required."
+	if deliveryMethod == "shipping" && address == "" {
+		errors["address"] = "Shipping address is required for shipping."
+	}
+	if deliveryMethod == "" {
+		deliveryMethod = "shipping" // Default
+	}
+	if paymentMethod == "" {
+		paymentMethod = "in_person" // Default
 	}
 
 	if len(errors) > 0 {
@@ -135,6 +143,8 @@ func (h *OrderHandler) SubmitOrder(w http.ResponseWriter, r *http.Request) {
 		CustomerName:    name,
 		CustomerEmail:   email,
 		CustomerAddress: address,
+		DeliveryMethod:  deliveryMethod,
+		PaymentMethod:   paymentMethod,
 		Status:          "Ordered",
 		Notes:           notes,
 		MagicToken:      token,

@@ -631,12 +631,14 @@ body.admin-body { /* Use a specific body class for admin pages if desired */
 }
 
 .admin-page-container {
-    max-width: 1000px;
+    max-width: 1600px; /* Increased from 1000px */
+    width: 95%; /* Make it fluid */
     margin: 2rem auto; /* Top/bottom margin, horizontally centered */
     background: white;
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-sizing: border-box; /* Ensure padding doesn't overflow width */
 }
 
 .admin-header { /* For the local header within the admin-page-container */

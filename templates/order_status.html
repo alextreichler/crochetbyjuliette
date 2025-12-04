@@ -65,7 +65,16 @@
             <h3 style="margin: 0 0 0.5rem 0;">{{.Order.ItemTitle}}</h3>
             <p style="margin: 0;"><strong>Qty:</strong> {{.Order.Quantity}}</p>
             <p style="margin: 0;"><strong>Customer:</strong> {{.Order.CustomerName}}</p>
-            <p style="margin: 0;"><strong>Shipping to:</strong> {{.Order.CustomerAddress}}</p>
+            
+            <p style="margin: 0;"><strong>Delivery:</strong> 
+                {{if eq .Order.DeliveryMethod "shipping"}}Shipping{{else}}Hand Delivered{{end}}
+            </p>
+            
+            {{if eq .Order.DeliveryMethod "shipping"}}
+            <p style="margin: 0;"><strong>Address:</strong> {{.Order.CustomerAddress}}</p>
+            {{end}}
+
+            <p style="margin: 0;"><strong>Payment:</strong> Pay in Person</p>
             <p style="margin: 0;"><strong>Notes:</strong> {{.Order.Notes}}</p>
         </div>
     </div>

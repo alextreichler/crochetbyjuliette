@@ -22,7 +22,7 @@
     </div>
 </header>
 
-<div class="admin-page-container">
+<div class="admin-page-container" style="max-width: 1400px;">
     <div class="admin-header">
         <h1>Orders</h1>
         <a href="/admin" class="admin-btn admin-btn-back">Back to Dashboard</a>
@@ -64,7 +64,14 @@
                 <td>
                     <strong>{{.CustomerName}}</strong><br>
                     <small>{{.CustomerEmail}}</small><br>
-                    <small style="color: #666;">{{.CustomerAddress}}</small>
+                    {{if eq .DeliveryMethod "shipping"}}
+                        <span class="badge" style="background: #e3f2fd; color: #1565c0; font-size: 0.75rem;">Shipping</span>
+                        <br><small style="color: #666;">{{.CustomerAddress}}</small>
+                    {{else}}
+                        <span class="badge" style="background: #f3e5f5; color: #7b1fa2; font-size: 0.75rem;">Hand Delivered</span>
+                    {{end}}
+                    <br>
+                    <small style="color: #555;">Pay: {{.PaymentMethod}}</small>
                     {{if .Notes}}<br><small style="color: #e91e63;">Note: {{.Notes}}</small>{{end}}
                 </td>
                 <td><span class="status-badge status-{{.Status}}">{{.Status}}</span></td>

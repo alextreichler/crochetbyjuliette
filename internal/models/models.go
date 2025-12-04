@@ -25,6 +25,8 @@ type Order struct {
 	CustomerName    string    `json:"customer_name"`
 	CustomerEmail   string    `json:"customer_email"`
 	CustomerAddress string    `json:"customer_address"`
+	DeliveryMethod  string    `json:"delivery_method"` // "shipping" or "hand_delivered"
+	PaymentMethod   string    `json:"payment_method"`  // "in_person"
 	Status          string    `json:"status"`
 	Notes           string    `json:"notes"`
 	AdminComments   string    `json:"admin_comments"` // Comments from the admin visible to the user
