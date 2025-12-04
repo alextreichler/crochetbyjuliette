@@ -5,82 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Item - Crochet by Juliette</title>
     <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
-    <style>
-        body { font-family: sans-serif; background-color: #f8f9fa; padding: 2rem; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #333; margin-top: 0; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .btn-back { background-color: #6c757d; color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; }
-        
-        form { display: grid; gap: 1rem; }
-        label { font-weight: bold; }
-        input[type="text"], input[type="number"], textarea, select { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button[type="submit"] { background-color: #e91e63; color: white; border: none; padding: 1rem; font-size: 1.1rem; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        button[type="submit"]:hover { background-color: #d81b60; }
-        
-        .flash-message {
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-        .flash-success {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #c8e6c9;
-        }
-        .flash-error {
-            background-color: #ffebee;
-            color: #c62828;
-            border: 1px solid #ffcdd2;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Add New Item</h1>
-            <a href="/admin" class="btn-back">Cancel</a>
-        </div>
+<body class="admin-body">
 
+<header>
+    <div class="header-content">
+        <img src="/static/img/logo.svg" alt="Logo" class="header-logo">
+        <h1 class="header-title">Crochet by Juliette</h1>
+    </div>
+    <div class="header-actions">
+        <a href="/" class="header-login-btn">View Site</a>
+        <a href="/logout" class="header-login-btn">Logout</a>
+    </div>
+</header>
+
+<div class="admin-page-container" style="max-width: 600px;">
+    <div class="admin-header">
+        <h1>Add New Item</h1>
+        <a href="/admin" class="admin-btn admin-btn-back">Cancel</a>
+    </div>
+
+    <!-- Toast/Flash Messages Target -->
+    <div id="toast-target" style="display:none;">
         {{with .Flashes}}
             {{range .}}
             <div class="flash-message flash-{{.Type}}">{{.Message}}</div>
             {{end}}
         {{end}}
-
-        <form method="POST" action="/admin/items" enctype="multipart/form-data">
-            {{.CsrfField}}
-            <div>
-                <label for="title">Title</label>
-                <input type="text" id="title" name="title" required placeholder="e.g. Blue Beanie">
-            </div>
-            <div>
-                <label for="price">Price ($)</label>
-                <input type="number" id="price" name="price" step="0.01" required placeholder="25.00">
-            </div>
-            <div>
-                <label for="delivery_time">Time to Build / Delivery</label>
-                <input type="text" id="delivery_time" name="delivery_time" required placeholder="e.g. 3 days">
-            </div>
-            <div>
-                <label for="status">Status</label>
-                <select id="status" name="status">
-                    <option value="available">Available</option>
-                    <option value="out_of_stock">Out of Stock</option>
-                    <option value="archived">No Longer Available</option>
-                </select>
-            </div>
-            <div>
-                <label for="image">Picture</label>
-                <input type="file" id="image" name="image" accept="image/*" required>
-            </div>
-            <div>
-                <label for="description">Details</label>
-                <textarea id="description" name="description" rows="4" placeholder="Description of the item..."></textarea>
-            </div>
-            <button type="submit">Add Item</button>
-        </form>
     </div>
+
+    <form method="POST" action="/admin/items" enctype="multipart/form-data" class="form-grid">
+        {{.CsrfField}}
+        <div>
+            <label for="title" class="form-label">Title</label>
+            <input type="text" id="title" name="title" class="form-input" required placeholder="e.g. Blue Beanie">
+        </div>
+        <div>
+            <label for="price" class="form-label">Price ($)</label>
+            <input type="number" id="price" name="price" step="0.01" class="form-input" required placeholder="25.00">
+        </div>
+        <div>
+            <label for="delivery_time" class="form-label">Time to Build / Delivery</label>
+            <input type="text" id="delivery_time" name="delivery_time" class="form-input" required placeholder="e.g. 3 days">
+        </div>
+        <div>
+            <label for="status" class="form-label">Status</label>
+            <select id="status" name="status" class="form-input">
+                <option value="available">Available</option>
+                <option value="out_of_stock">Out of Stock</option>
+                <option value="archived">No Longer Available</option>
+            </select>
+        </div>
+        <div>
+            <label for="image" class="form-label">Picture</label>
+            <input type="file" id="image" name="image" accept="image/*" required class="form-input" style="padding: 0.5rem;">
+        </div>
+        <div>
+            <label for="description" class="form-label">Details</label>
+            <textarea id="description" name="description" rows="4" class="form-textarea" placeholder="Description of the item..."></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Add Item</button>
+    </form>
+</div>
+
+<footer>
+    <p>&copy; 2025 Crochet by Juliette</p>
+</footer>
+
+<script src="/static/js/main.js"></script>
 </body>
 </html>
