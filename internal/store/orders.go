@@ -15,7 +15,7 @@ func (s *Store) CreateOrder(order *models.Order) error {
 
 func (s *Store) GetAllOrders(limit, offset int) ([]models.Order, error) {
 	query := `
-		SELECT o.id, COALESCE(o.order_ref, CAST(o.id AS TEXT)) as order_ref, o.item_id, i.title, i.image_url, COALESCE(o.quantity, 1) as quantity, o.customer_name, o.customer_email, o.customer_address, o.status, o.notes, o.created_at 
+		SELECT o.id, COALESCE(o.order_ref, CAST(o.id AS TEXT)) as order_ref, o.item_id, i.title, i.image_url, COALESCE(o.quantity, 1) as quantity, o.customer_name, o.customer_email, o.customer_address, o.status, o.notes, COALESCE(o.admin_comments, '') as admin_comments, o.created_at 
 		FROM orders o
 		JOIN items i ON o.item_id = i.id
 		ORDER BY o.created_at DESC
@@ -30,7 +30,7 @@ func (s *Store) GetAllOrders(limit, offset int) ([]models.Order, error) {
 	var orders []models.Order
 	for rows.Next() {
 		var o models.Order
-		if err := rows.Scan(&o.ID, &o.OrderRef, &o.ItemID, &o.ItemTitle, &o.ItemImageURL, &o.Quantity, &o.CustomerName, &o.CustomerEmail, &o.CustomerAddress, &o.Status, &o.Notes, &o.CreatedAt); err != nil {
+		if err := rows.Scan(&o.ID, &o.OrderRef, &o.ItemID, &o.ItemTitle, &o.ItemImageURL, &o.Quantity, &o.CustomerName, &o.CustomerEmail, &o.CustomerAddress, &o.Status, &o.Notes, &o.AdminComments, &o.CreatedAt); err != nil {
 			return nil, err
 		}
 		orders = append(orders, o)
@@ -47,9 +47,9 @@ func (s *Store) GetTotalOrdersCount() (int, error) {
 	return count, nil
 }
 
-func (s *Store) UpdateOrderStatus(id int, status string) error {
-	query := `UPDATE orders SET status = ? WHERE id = ?`
-	_, err := s.DB.Exec(query, status, id)
+func (s *Store) UpdateOrderStatus(id int, status string, adminComments string) error {
+	query := `UPDATE orders SET status = ?, admin_comments = ? WHERE id = ?`
+	_, err := s.DB.Exec(query, status, adminComments, id)
 	return err
 }
 

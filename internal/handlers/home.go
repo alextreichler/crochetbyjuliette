@@ -25,11 +25,19 @@ func (h *HomeHandler) Index(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Template not found", http.StatusInternalServerError)
 		return
 	}
-	session, _ := h.SessionStore.Get(r, "public-session") // Using a different session for public pages
+	publicSession, _ := h.SessionStore.Get(r, "public-session")
+	adminSession, _ := h.SessionStore.Get(r, "admin-session")
+
+	isAdmin := false
+	if auth, ok := adminSession.Values["authenticated"].(bool); ok && auth {
+		isAdmin = true
+	}
+
 	data := map[string]interface{}{
 		"Items":   items,
-		"Flashes": GetFlash(session),
+		"Flashes": GetFlash(publicSession),
+		"IsAdmin": isAdmin,
 	}
-	session.Save(r, w)
+	publicSession.Save(r, w)
 	tmpl.Execute(w, data)
 }

@@ -61,6 +61,7 @@ func (h *AdminHandler) ListOrders(w http.ResponseWriter, r *http.Request) {
 func (h *AdminHandler) UpdateOrderStatus(w http.ResponseWriter, r *http.Request) {
 	idStr := r.FormValue("id")
 	status := r.FormValue("status")
+	adminComments := r.FormValue("admin_comments")
 	
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -68,13 +69,13 @@ func (h *AdminHandler) UpdateOrderStatus(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if err := h.Store.UpdateOrderStatus(id, status); err != nil {
+	if err := h.Store.UpdateOrderStatus(id, status, adminComments); err != nil {
 		http.Error(w, "Error updating status", http.StatusInternalServerError)
 		return
 	}
 
 	session, _ := h.SessionStore.Get(r, "admin-session")
-	session.AddFlash(FlashMessage{Type: "success", Message: "Order status updated to " + status + "!"})
+	session.AddFlash(FlashMessage{Type: "success", Message: "Order updated!"})
 	session.Save(r, w)
 	http.Redirect(w, r, "/admin/orders", http.StatusSeeOther)
 }

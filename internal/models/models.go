@@ -27,6 +27,7 @@ type Order struct {
 	CustomerAddress string    `json:"customer_address"`
 	Status          string    `json:"status"`
 	Notes           string    `json:"notes"`
+	AdminComments   string    `json:"admin_comments"` // Comments from the admin visible to the user
 	MagicToken      string    `json:"magic_token"`
 	MagicTokenExpiry time.Time `json:"magic_token_expiry"`
 	CreatedAt       time.Time `json:"created_at"`

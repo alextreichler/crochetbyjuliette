@@ -27,12 +27,18 @@ type AdminHandler struct {
 }
 
 func (h *AdminHandler) LoginGet(w http.ResponseWriter, r *http.Request) {
+	session, _ := h.SessionStore.Get(r, "admin-session")
+	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
+		http.Redirect(w, r, "/admin", http.StatusSeeOther)
+		return
+	}
+
 	tmpl := h.Templates.Get("login.html")
 	if tmpl == nil {
 		http.Error(w, "Template not found", http.StatusInternalServerError)
 		return
 	}
-	session, _ := h.SessionStore.Get(r, "admin-session")
+	
 	data := map[string]interface{}{
 		"CsrfField": csrf.TemplateField(r),
 		"Flashes":   GetFlash(session),

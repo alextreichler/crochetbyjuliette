@@ -44,7 +44,7 @@
                 <th>Item</th>
                 <th>Customer</th>
                 <th>Status</th>
-                <th>Actions</th>
+                <th>Update & Comments</th>
             </tr>
         </thead>
         <tbody>
@@ -69,19 +69,24 @@
                 </td>
                 <td><span class="status-badge status-{{.Status}}">{{.Status}}</span></td>
                 <td>
-                    <form method="POST" action="/admin/orders/update">
+                    <form method="POST" action="/admin/orders/update" style="display: flex; flex-direction: column; gap: 0.5rem;">
                         {{$.CsrfField}}
                         <input type="hidden" name="id" value="{{.ID}}">
-                        <select name="status" class="admin-select">
-                            <option value="Ordered" {{if eq .Status "Ordered"}}selected{{end}}>Ordered</option>
-                            <option value="In Progress" {{if eq .Status "In Progress"}}selected{{end}}>In Progress</option>
-                            <option value="Completed" {{if eq .Status "Completed"}}selected{{end}}>Completed</option>
-                            <option value="Needs Shipping" {{if eq .Status "Needs Shipping"}}selected{{end}}>Needs Shipping</option>
-                            <option value="Shipped" {{if eq .Status "Shipped"}}selected{{end}}>Shipped</option>
-                            <option value="Delivered" {{if eq .Status "Delivered"}}selected{{end}}>Delivered</option>
-                            <option value="Cancelled" {{if eq .Status "Cancelled"}}selected{{end}}>Cancelled</option>
-                        </select>
-                        <button type="submit" class="admin-update-btn">Update</button>
+                        
+                        <div style="display: flex; gap: 0.5rem;">
+                            <select name="status" class="admin-select" style="flex: 1;">
+                                <option value="Ordered" {{if eq .Status "Ordered"}}selected{{end}}>Ordered</option>
+                                <option value="In Progress" {{if eq .Status "In Progress"}}selected{{end}}>In Progress</option>
+                                <option value="Completed" {{if eq .Status "Completed"}}selected{{end}}>Completed</option>
+                                <option value="Needs Shipping" {{if eq .Status "Needs Shipping"}}selected{{end}}>Needs Shipping</option>
+                                <option value="Shipped" {{if eq .Status "Shipped"}}selected{{end}}>Shipped</option>
+                                <option value="Delivered" {{if eq .Status "Delivered"}}selected{{end}}>Delivered</option>
+                                <option value="Cancelled" {{if eq .Status "Cancelled"}}selected{{end}}>Cancelled</option>
+                            </select>
+                            <button type="submit" class="admin-update-btn">Save</button>
+                        </div>
+                        
+                        <textarea name="admin_comments" placeholder="Add comment for customer..." rows="2" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; font-size: 0.9rem;">{{.AdminComments}}</textarea>
                     </form>
                 </td>
             </tr>

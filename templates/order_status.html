@@ -52,6 +52,13 @@
         {{end}}
     </div>
 
+    {{if .Order.AdminComments}}
+    <div style="background: #fff9c4; border-left: 4px solid #fbc02d; padding: 1rem; margin-bottom: 2rem; border-radius: 4px;">
+        <h4 style="margin: 0 0 0.5rem 0; color: #f57f17;">Note from Juliette:</h4>
+        <p style="margin: 0; color: #333; white-space: pre-wrap;">{{.Order.AdminComments}}</p>
+    </div>
+    {{end}}
+
     <div class="item-details">
         <img src="{{.Order.ItemImageURL}}" alt="{{.Order.ItemTitle}}">
         <div>

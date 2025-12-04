@@ -7,7 +7,7 @@ import (
 func (s *Store) GetOrderByToken(token string) (*models.Order, error) {
 	// Join with items table to get item details
 	query := `
-		SELECT o.id, COALESCE(o.order_ref, CAST(o.id AS TEXT)) as order_ref, o.item_id, i.title, i.image_url, COALESCE(o.quantity, 1) as quantity, o.customer_name, o.customer_email, o.customer_address, o.status, o.notes, o.magic_token, o.magic_token_expiry, o.created_at 
+		SELECT o.id, COALESCE(o.order_ref, CAST(o.id AS TEXT)) as order_ref, o.item_id, i.title, i.image_url, COALESCE(o.quantity, 1) as quantity, o.customer_name, o.customer_email, o.customer_address, o.status, o.notes, COALESCE(o.admin_comments, '') as admin_comments, o.magic_token, o.magic_token_expiry, o.created_at 
 		FROM orders o
 		JOIN items i ON o.item_id = i.id
 		WHERE o.magic_token = ?
@@ -15,7 +15,7 @@ func (s *Store) GetOrderByToken(token string) (*models.Order, error) {
 	row := s.DB.QueryRow(query, token)
 
 	var o models.Order
-	if err := row.Scan(&o.ID, &o.OrderRef, &o.ItemID, &o.ItemTitle, &o.ItemImageURL, &o.Quantity, &o.CustomerName, &o.CustomerEmail, &o.CustomerAddress, &o.Status, &o.Notes, &o.MagicToken, &o.MagicTokenExpiry, &o.CreatedAt); err != nil {
+	if err := row.Scan(&o.ID, &o.OrderRef, &o.ItemID, &o.ItemTitle, &o.ItemImageURL, &o.Quantity, &o.CustomerName, &o.CustomerEmail, &o.CustomerAddress, &o.Status, &o.Notes, &o.AdminComments, &o.MagicToken, &o.MagicTokenExpiry, &o.CreatedAt); err != nil {
 		return nil, err
 	}
 	return &o, nil
