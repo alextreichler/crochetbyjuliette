@@ -6,6 +6,7 @@ body {
     margin: 0;
     padding: 0;
     color: #333;
+    line-height: 1.6;
     /* A very subtle, less dramatic light pink gradient */
     background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
     min-height: 100vh;
@@ -202,7 +203,17 @@ header {
     transition: transform 0.5s ease; /* Smooth transition for the zoom */
 }
 
-.card-body { padding: 1.5rem; }
+.card-body { 
+    padding: 1.5rem; 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.card-body .order-btn {
+    margin-top: auto;
+}
 .card-title { font-size: 1.25rem; margin: 0 0 0.5rem 0; color: #c2185b; font-family: 'Pacifico', cursive; }
 .card-price { font-size: 1.2rem; font-weight: 700; color: #333; margin-bottom: 0.5rem; }
 .card-text { font-size: 0.95rem; color: #555; margin-bottom: 1rem; line-height: 1.6; }
@@ -639,6 +650,7 @@ body.admin-body { /* Use a specific body class for admin pages if desired */
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     box-sizing: border-box; /* Ensure padding doesn't overflow width */
+    flex: 1;
 }
 
 .admin-header { /* For the local header within the admin-page-container */
@@ -662,8 +674,13 @@ body.admin-body { /* Use a specific body class for admin pages if desired */
 
 .admin-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate; 
+    border-spacing: 0;
     margin-top: 1rem;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .admin-table th, .admin-table td {
@@ -673,7 +690,20 @@ body.admin-body { /* Use a specific body class for admin pages if desired */
 }
 
 .admin-table th {
-    background-color: #f1f1f1;
+    background-color: #f8f9fa;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    color: #555;
+}
+
+.admin-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #f0f0f0;
 }
 
 select.admin-select {
@@ -764,5 +794,89 @@ button, .btn, .nav-btn, .admin-btn, .update-btn, .submit-btn, .order-btn, .heade
 }
 button:active, .btn:active, .nav-btn:active, .admin-btn:active, .update-btn:active, .submit-btn:active, .order-btn:active, .header-login-btn:active {
     transform: scale(0.98);
+}
+
+/* Customer Info Styles */
+.customer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.customer-name {
+    font-weight: bold;
+    font-size: 1.05rem;
+    color: #333;
+    margin-bottom: 0.2rem;
+}
+
+.customer-detail {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+.customer-detail .label {
+    font-weight: 600;
+    color: #777;
+    margin-right: 0.3rem;
+}
+
+.customer-detail .address {
+    margin-top: 0.2rem;
+    padding-left: 0.5rem;
+    border-left: 2px solid #eee;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.customer-note {
+    margin-top: 0.4rem;
+    background: #fff0f5;
+    padding: 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #c2185b;
+    border: 1px solid #f8bbd0;
+}
+
+.customer-note .label {
+    font-weight: bold;
+    color: #e91e63;
+}
+
+/* Specific Badges */
+.badge-shipping {
+    background: #e3f2fd;
+    color: #1565c0;
+    font-size: 0.75rem;
+}
+
+.badge-hand {
+    background: #f3e5f5;
+    color: #7b1fa2;
+    font-size: 0.75rem;
+}
+
+/* Dashboard Stat Card Improvements */
+.stat-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #eee;
+    border-top: 4px solid #e91e63;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(233, 30, 99, 0.15);
+}
+
+/* Hero Text Readability */
+.hero-subheadline {
+    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+    font-weight: 600;
 }
 

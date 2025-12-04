@@ -62,17 +62,28 @@
                     </div>
                 </td>
                 <td>
-                    <strong>{{.CustomerName}}</strong><br>
-                    <small>{{.CustomerEmail}}</small><br>
-                    {{if eq .DeliveryMethod "shipping"}}
-                        <span class="badge" style="background: #e3f2fd; color: #1565c0; font-size: 0.75rem;">Shipping</span>
-                        <br><small style="color: #666;">{{.CustomerAddress}}</small>
-                    {{else}}
-                        <span class="badge" style="background: #f3e5f5; color: #7b1fa2; font-size: 0.75rem;">Hand Delivered</span>
-                    {{end}}
-                    <br>
-                    <small style="color: #555;">Pay: {{.PaymentMethod}}</small>
-                    {{if .Notes}}<br><small style="color: #e91e63;">Note: {{.Notes}}</small>{{end}}
+                    <div class="customer-info">
+                        <div class="customer-name">{{.CustomerName}}</div>
+                        <div class="customer-detail">
+                            <span class="label">Email:</span> {{.CustomerEmail}}
+                        </div>
+                        <div class="customer-detail">
+                            {{if eq .DeliveryMethod "shipping"}}
+                                <span class="badge badge-shipping">Shipping</span>
+                                <div class="address">{{.CustomerAddress}}</div>
+                            {{else}}
+                                <span class="badge badge-hand">Hand Delivered</span>
+                            {{end}}
+                        </div>
+                        <div class="customer-detail">
+                            <span class="label">Payment:</span> {{.PaymentMethod}}
+                        </div>
+                        {{if .Notes}}
+                        <div class="customer-note">
+                            <span class="label">Note:</span> {{.Notes}}
+                        </div>
+                        {{end}}
+                    </div>
                 </td>
                 <td><span class="status-badge status-{{.Status}}">{{.Status}}</span></td>
                 <td>
