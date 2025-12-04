@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Items - Crochet by Juliette</title>
+    <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .admin-item-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+        }
+        .admin-item-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+        .admin-item-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .admin-item-title {
+            font-weight: bold;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .admin-item-status {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .status-available { color: #2e7d32; font-weight: bold; }
+        .status-out_of_stock { color: #c62828; font-weight: bold; }
+        .status-archived { color: #455a64; font-weight: bold; font-style: italic; }
+        
+        .admin-item-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 0.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .action-btn {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .edit-btn {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #bbdefb;
+        }
+        .edit-btn:hover { background-color: #bbdefb; }
+        
+        .delete-btn {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+        .delete-btn:hover { background-color: #ffcdd2; }
+    </style>
+</head>
+<body class="admin-body">
+
+<header>
+    <div class="header-content">
+        <img src="/static/img/logo.svg" alt="Logo" class="header-logo">
+        <h1 class="header-title">Crochet by Juliette</h1>
+    </div>
+    <div class="header-actions">
+        <a href="/" class="header-login-btn">View Site</a>
+        <a href="/logout" class="header-login-btn">Logout</a>
+    </div>
+</header>
+
+<div class="admin-page-container">
+    <div class="admin-header">
+        <h1>Manage Items</h1>
+        <div>
+            <a href="/admin/items/new" class="admin-btn" style="background-color: #e91e63;">+ Add New</a>
+            <a href="/admin" class="admin-btn admin-btn-back">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Toast/Flash Messages Target -->
+    <div id="toast-target" style="display:none;">
+        {{with .Flashes}}
+            {{range .}}
+            <div class="flash-message flash-{{.Type}}">{{.Message}}</div>
+            {{end}}
+        {{end}}
+    </div>
+
+    <div class="item-grid">
+        {{range .Items}}
+        <div class="admin-item-card">
+            <img src="{{.ImageURL}}" alt="{{.Title}}">
+            <div class="admin-item-body">
+                <h3 class="admin-item-title">{{.Title}}</h3>
+                <div class="admin-item-status">
+                    Status: 
+                    <span class="status-{{.Status}}">
+                        {{if eq .Status "available"}}Available
+                        {{else if eq .Status "out_of_stock"}}Out of Stock
+                        {{else if eq .Status "archived"}}Archived
+                        {{else}}{{.Status}}{{end}}
+                    </span>
+                </div>
+                <div style="font-size: 0.9rem; color: #666;">
+                    ${{.Price}} | Takes {{.DeliveryTime}}
+                </div>
+                
+                <div class="admin-item-actions">
+                    <a href="/admin/items/edit?id={{.ID}}" class="action-btn edit-btn">Edit</a>
+                    <!-- Basic delete with confirm, for improved UX could be a modal -->
+                    <form action="/admin/items/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');" style="flex: 1; display: flex;">
+                        {{$.CsrfField}}
+                        <input type="hidden" name="id" value="{{.ID}}">
+                        <button type="submit" class="action-btn delete-btn" style="width: 100%; cursor: pointer;">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {{else}}
+        <div class="empty-state" style="grid-column: 1/-1;">
+            <p>No items found. Time to crochet something new!</p>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 Crochet by Juliette</p>
+</footer>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>

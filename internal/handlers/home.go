@@ -14,7 +14,7 @@ type HomeHandler struct {
 }
 
 func (h *HomeHandler) Index(w http.ResponseWriter, r *http.Request) {
-	items, err := h.Store.GetAllItems()
+	items, err := h.Store.GetPublicItems()
 	if err != nil {
 		http.Error(w, "Error fetching items", http.StatusInternalServerError)
 		return

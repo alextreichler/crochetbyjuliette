@@ -58,7 +58,7 @@ func main() {
 
 	// 3. Init Templates
 	templates := handlers.NewTemplateCache()
-	
+
 	// Add other template funcs (prevPage, nextPage)
 	templates.AddFunc("prevPage", func(currentPage int) int { return currentPage - 1 })
 	templates.AddFunc("nextPage", func(currentPage int) int { return currentPage + 1 })
@@ -75,15 +75,15 @@ func main() {
 		Templates:    templates,
 	}
 	homeHandler := &handlers.HomeHandler{
-		Store:     db,
-		Templates: templates,
+		Store:        db,
+		Templates:    templates,
 		SessionStore: sessionStore,
 	}
 	orderHandler := &handlers.OrderHandler{
 		Store:        db,
 		Templates:    templates,
 		SessionStore: sessionStore,
-	}		
+	}
 	mux := http.NewServeMux()
 
 	// Static Files
@@ -95,15 +95,15 @@ func main() {
 
 	// Public Routes
 	mux.HandleFunc("/", homeHandler.Index)
-	mux.HandleFunc("/order", orderHandler.OrderForm) // GET form
+	mux.HandleFunc("/order", orderHandler.OrderForm)                                // GET form
 	mux.HandleFunc("POST /order", rateLimiter.Middleware(orderHandler.SubmitOrder)) // POST submit
-	
+
 	// Order Status (Magic Link)
 	mux.HandleFunc("/status-request", orderHandler.RequestStatusLink) // GET form & POST submit (could split)
 	mux.HandleFunc("POST /status-request", rateLimiter.Middleware(orderHandler.SendStatusLink))
-	mux.HandleFunc("/my-orders", orderHandler.MyOrders) // List all orders for valid token
+	mux.HandleFunc("/my-orders", orderHandler.MyOrders)            // List all orders for valid token
 	mux.HandleFunc("/order/status/", orderHandler.ViewOrderStatus) // Trailing slash matches /order/status/{token}
-	
+
 	// Order Management (Edit/Cancel)
 	mux.HandleFunc("/order/edit/", orderHandler.EditOrderForm)
 	mux.HandleFunc("POST /order/update", rateLimiter.Middleware(orderHandler.UpdateOrder))
@@ -117,17 +117,19 @@ func main() {
 	mux.HandleFunc("/admin", adminHandler.AuthMiddleware(adminHandler.Dashboard))
 	mux.HandleFunc("/admin/orders", adminHandler.AuthMiddleware(adminHandler.ListOrders))
 	mux.HandleFunc("POST /admin/orders/update", adminHandler.AuthMiddleware(adminHandler.UpdateOrderStatus))
-	
+
+	mux.HandleFunc("/admin/items", adminHandler.AuthMiddleware(adminHandler.ListItems))       // List all items
 	mux.HandleFunc("/admin/items/new", adminHandler.AuthMiddleware(adminHandler.AddItemForm)) // GET form
 	mux.HandleFunc("POST /admin/items", adminHandler.AuthMiddleware(adminHandler.CreateItem)) // POST submit
 	mux.HandleFunc("POST /admin/items/delete", adminHandler.AuthMiddleware(adminHandler.DeleteItem))
-
+	mux.HandleFunc("/admin/items/edit", adminHandler.AuthMiddleware(adminHandler.EditItemForm))      // GET form
+	mux.HandleFunc("POST /admin/items/update", adminHandler.AuthMiddleware(adminHandler.UpdateItem)) // POST submit
 	// 6. Middleware Setup
 	CSRF := csrf.Protect(
 		cfg.CSRFKey,
 		csrf.Secure(cfg.CookieSecure), // Configurable for production
 		// Fix for "Forbidden - origin invalid": Trust local development origins
-		csrf.TrustedOrigins([]string{"localhost:"+cfg.Port, "127.0.0.1:"+cfg.Port, "localhost", "127.0.0.1"}),
+		csrf.TrustedOrigins([]string{"localhost:" + cfg.Port, "127.0.0.1:" + cfg.Port, "localhost", "127.0.0.1"}),
 	)
 
 	// Wrap the router with middleware chain

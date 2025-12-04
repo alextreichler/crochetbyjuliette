@@ -56,7 +56,7 @@
                     {{end}}
                 </div>
                 
-                {{if eq .Status "available"}}
+                {{if and (ne .Status "out_of_stock") (ne .Status "archived")}}
                 <a href="/order?id={{.ID}}" class="order-btn">Place Order</a>
                 {{end}}
             </div>

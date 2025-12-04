@@ -51,7 +51,7 @@ func SecurityHeadersMiddleware(next http.Handler) http.Handler {
 		w.Header().Set("X-XSS-Protection", "1; mode=block")
 		// CSP: Allow styles/scripts from self and standard sources.
 		// Note: Inline styles might break with strict CSP unless 'unsafe-inline' is used (common compromise for simple apps)
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self'") // Removed 'unsafe-eval' to tighten CSP.
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com") // Removed 'unsafe-eval' to tighten CSP.
 		next.ServeHTTP(w, r)
 	})
 }

@@ -53,17 +53,6 @@ func (s *Store) UpdateOrderStatus(id int, status string, adminComments string) e
 	return err
 }
 
-func (s *Store) GetItemByID(id int) (*models.Item, error) {
-	query := `SELECT id, title, description, price, delivery_time, image_url, COALESCE(status, 'available') as status, created_at FROM items WHERE id = ?`
-	row := s.DB.QueryRow(query, id)
-
-	var i models.Item
-	if err := row.Scan(&i.ID, &i.Title, &i.Description, &i.Price, &i.DeliveryTime, &i.ImageURL, &i.Status, &i.CreatedAt); err != nil {
-		return nil, err
-	}
-	return &i, nil
-}
-
 func (s *Store) UpdateOrderDetails(order *models.Order) error {
 	query := `UPDATE orders SET quantity = ?, customer_name = ?, customer_email = ?, customer_address = ?, delivery_method = ?, payment_method = ?, notes = ? WHERE id = ?`
 	_, err := s.DB.Exec(query, order.Quantity, order.CustomerName, order.CustomerEmail, order.CustomerAddress, order.DeliveryMethod, order.PaymentMethod, order.Notes, order.ID)

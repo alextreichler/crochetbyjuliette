@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.target == modal) {
             modal.style.display = "none";
         }
+    };
+
     // Toast Notification Logic
     var flashMessagesContainer = document.getElementById('toast-target');
     if (flashMessagesContainer) {

@@ -183,6 +183,8 @@ header {
     border: 1px solid rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(12px);
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
 }
 
 .card:hover {
@@ -207,7 +209,7 @@ header {
     padding: 1.5rem; 
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
     box-sizing: border-box;
 }
 
@@ -536,7 +538,7 @@ footer {
 .hero {
     text-align: center;
     padding: 6rem 2rem;
-    background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.9)), url('/static/img/hero-bg.jpg') no-repeat center center; /* Placeholder image */
+    background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.9)), url('/static/img/hero-bg.svg') no-repeat center center; /* Placeholder image */
     background-size: cover;
     color: #e91e63;
     position: relative;
@@ -755,6 +757,7 @@ select.admin-select {
     font-size: 1rem;
 }
 
+::-webkit-scrollbar {
     width: 10px;
 }
 ::-webkit-scrollbar-track {

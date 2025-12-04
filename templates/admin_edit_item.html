@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Item - Crochet by Juliette</title>
+    <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="admin-body">
+
+<header>
+    <div class="header-content">
+        <img src="/static/img/logo.svg" alt="Logo" class="header-logo">
+        <h1 class="header-title">Crochet by Juliette</h1>
+    </div>
+    <div class="header-actions">
+        <a href="/" class="header-login-btn">View Site</a>
+        <a href="/logout" class="header-login-btn">Logout</a>
+    </div>
+</header>
+
+<div class="admin-page-container" style="max-width: 600px;">
+    <div class="admin-header">
+        <h1>Edit Item</h1>
+        <a href="/admin" class="admin-btn admin-btn-back">Cancel</a>
+    </div>
+
+    <!-- Toast/Flash Messages Target -->
+    <div id="toast-target" style="display:none;">
+        {{with .Flashes}}
+            {{range .}}
+            <div class="flash-message flash-{{.Type}}">{{.Message}}</div>
+            {{end}}
+        {{end}}
+    </div>
+
+    <form method="POST" action="/admin/items/update" enctype="multipart/form-data" class="form-grid">
+        {{.CsrfField}}
+        <input type="hidden" name="id" value="{{.Item.ID}}">
+        
+        <div>
+            <label for="title" class="form-label">Title</label>
+            <input type="text" id="title" name="title" class="form-input" required value="{{.Item.Title}}">
+        </div>
+        <div>
+            <label for="price" class="form-label">Price ($)</label>
+            <input type="number" id="price" name="price" step="0.01" class="form-input" required value="{{.Item.Price}}">
+        </div>
+        <div>
+            <label for="delivery_time" class="form-label">Time to Build / Delivery</label>
+            <input type="text" id="delivery_time" name="delivery_time" class="form-input" required value="{{.Item.DeliveryTime}}">
+        </div>
+        <div>
+            <label for="status" class="form-label">Status</label>
+            <select id="status" name="status" class="form-input">
+                <option value="available" {{if eq .Item.Status "available"}}selected{{end}}>Available</option>
+                <option value="out_of_stock" {{if eq .Item.Status "out_of_stock"}}selected{{end}}>Out of Stock</option>
+                <option value="archived" {{if eq .Item.Status "archived"}}selected{{end}}>Archived (Hidden)</option>
+            </select>
+        </div>
+        <div>
+            <label for="image" class="form-label">Update Picture (Optional)</label>
+            <div style="margin-bottom: 0.5rem;">
+                <img src="{{.Item.ImageURL}}" alt="Current" style="height: 50px; border-radius: 4px; vertical-align: middle;">
+                <span style="font-size: 0.9rem; color: #666; margin-left: 0.5rem;">Current Image</span>
+            </div>
+            <input type="file" id="image" name="image" accept="image/*" class="form-input" style="padding: 0.5rem;">
+        </div>
+        <div>
+            <label for="description" class="form-label">Details</label>
+            <textarea id="description" name="description" rows="4" class="form-textarea">{{.Item.Description}}</textarea>
+        </div>
+        <button type="submit" class="submit-btn">Update Item</button>
+    </form>
+</div>
+
+<footer>
+    <p>&copy; 2025 Crochet by Juliette</p>
+</footer>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
