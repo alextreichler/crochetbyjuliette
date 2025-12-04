@@ -328,6 +328,7 @@ footer {
     width: 100%;
     margin: auto; /* Centers in flex column */
     text-align: center;
+    box-sizing: border-box;
 }
 
 /* Re-use order-container but ensure it centers */
@@ -339,6 +340,7 @@ footer {
     max-width: 600px;
     width: 100%;
     margin: auto; /* Changed from 2rem to auto for centering */
+    box-sizing: border-box;
 }
 
 /* Status Page Specifics */
@@ -400,6 +402,7 @@ footer {
     border: 1px solid #ddd; 
     border-radius: 4px; 
     box-sizing: border-box;
+    font-size: 1rem; /* Prevents auto-zoom on iOS */
 }
 
 .submit-btn {
