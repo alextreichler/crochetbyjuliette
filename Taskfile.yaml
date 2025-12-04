@@ -12,8 +12,8 @@ tasks:
   build:
     desc: Build the Go binaries locally
     cmds:
-      - go build -o crochet-server ./cmd/server
-      - go build -o crochet-cli ./cmd/cli
+      - CGO_ENABLED=0 go build -o crochet-server ./cmd/server
+      - CGO_ENABLED=0 go build -o crochet-cli ./cmd/cli
 
   image:
     desc: Build the container image using Podman
